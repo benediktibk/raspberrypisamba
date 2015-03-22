@@ -10,4 +10,10 @@ HOMEPAGE="http://www.samba.org"
 SRC_URI="https://download.samba.org/pub/samba/samba-4.2.0.tar.gz"
  
 LICENSE="GPL"
-KEYWORDS="~amd64 ~arm" 
+KEYWORDS="~amd64 ~arm"
+
+inherit eutils
+
+src_prepare() {
+	epatch "${FILESDIR}"/exception_001.patch
+}
