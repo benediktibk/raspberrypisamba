@@ -32,4 +32,5 @@ src_prepare() {
 	epatch "${FILESDIR}"/indentation_001.patch
 	epatch "${FILESDIR}"/print_001.patch
 	epatch "${FILESDIR}"/xrange_001.patch
+	epatch "${FILESDIR}"/summary.patch
 }
