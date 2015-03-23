@@ -1,0 +1,11 @@
+--- buildtools/wafadmin/Options.py	2015-03-23 00:42:50.279995971 +0100
++++ buildtools/wafadmin/Options.py	2015-03-23 00:44:29.939995933 +0100
+@@ -38,7 +38,7 @@
+ 		# win32 preserves the case, but gettempdir does not
+ 	else: default_prefix = '/usr/local/'
+ 
+-default_jobs = os.environ.get('JOBS', -1)
++default_jobs = int(os.environ.get('JOBS', -1))
+ if default_jobs < 1:
+ 	try:
+ 		if 'SC_NPROCESSORS_ONLN' in os.sysconf_names:

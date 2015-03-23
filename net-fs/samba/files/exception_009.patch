@@ -1,0 +1,20 @@
+--- buildtools/wafadmin/Runner.py	2014-10-01 11:16:21.000000000 +0200
++++ buildtools/wafadmin/Runner.py	2015-03-23 00:51:40.919995769 +0100
+@@ -35,7 +35,7 @@
+ 		if tsk.__class__.stat: ret = tsk.__class__.stat(tsk)
+ 		# actual call to task's run() function
+ 		else: ret = tsk.call_run()
+-	except Exception, e:
++	except Exception as e:
+ 		tsk.err_msg = Utils.ex_stack()
+ 		tsk.hasrun = EXCEPTION
+ 
+@@ -193,7 +193,7 @@
+ 
+ 			try:
+ 				st = tsk.runnable_status()
+-			except Exception, e:
++			except Exception as e:
+ 				self.processed += 1
+ 				if self.stop and not Options.options.keep:
+ 					tsk.hasrun = SKIPPED

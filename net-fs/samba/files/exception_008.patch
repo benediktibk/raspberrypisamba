@@ -1,0 +1,20 @@
+--- buildtools/wafadmin/Build.py	2014-10-01 11:16:21.000000000 +0200
++++ buildtools/wafadmin/Build.py	2015-03-23 00:47:47.369995858 +0100
+@@ -345,7 +345,7 @@
+ 	def load_envs(self):
+ 		try:
+ 			lst = Utils.listdir(self.cachedir)
+-		except OSError, e:
++		except OSError as e:
+ 			if e.errno == errno.ENOENT:
+ 				raise Utils.WafError('The project was not configured: run "waf configure" first!')
+ 			else:
+@@ -801,7 +801,7 @@
+ 
+ 			try:
+ 				os.remove(tgt)
+-			except OSError, e:
++			except OSError as e:
+ 				if e.errno != errno.ENOENT:
+ 					if not getattr(self, 'uninstall_error', None):
+ 						self.uninstall_error = True

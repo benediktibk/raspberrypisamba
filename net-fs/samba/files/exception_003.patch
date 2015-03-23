@@ -1,0 +1,11 @@
+--- buildtools/wafadmin/Utils.py	2015-03-23 00:25:44.759996362 +0100
++++ buildtools/wafadmin/Utils.py	2015-03-23 00:24:25.109996393 +0100
+@@ -423,7 +423,7 @@
+ 	except OSError:
+ 		try:
+ 			os.makedirs(dir)
+-		except OSError, e:
++		except OSError as e:
+ 			raise WafError("Cannot create folder '%s' (original error: %s)" % (dir, e))
+ 
+ def cmd_output(cmd, **kw):

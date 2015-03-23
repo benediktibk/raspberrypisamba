@@ -1,0 +1,11 @@
+--- buildtools/wafadmin/Configure.py	2015-03-23 00:35:38.989996136 +0100
++++ buildtools/wafadmin/Configure.py	2015-03-23 00:36:07.009996125 +0100
+@@ -419,7 +419,7 @@
+ 			if not f: self.fatal("No such method '%s'." % x)
+ 			try:
+ 				f()
+-			except Exception, e:
++			except Exception as e:
+ 				ret = self.err_handler(x, e)
+ 				if ret == BREAK:
+ 					break
