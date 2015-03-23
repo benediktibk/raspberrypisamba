@@ -1,0 +1,324 @@
+--- buildtools/wafadmin/Options.py	2015-03-23 00:42:50.279995971 +0100
++++ buildtools/wafadmin/Options.py	2015-03-23 00:44:29.939995933 +0100
+@@ -38,7 +38,7 @@
+ 		# win32 preserves the case, but gettempdir does not
+ 	else: default_prefix = '/usr/local/'
+ 
+-default_jobs = os.environ.get('JOBS', -1)
++default_jobs = int(os.environ.get('JOBS', -1))
+ if default_jobs < 1:
+ 	try:
+ 		if 'SC_NPROCESSORS_ONLN' in os.sysconf_names:
+--- buildtools/wafsamba/wafsamba.py	2015-02-24 19:59:51.000000000 +0100
++++ buildtools/wafsamba/wafsamba.py	2015-03-23 01:01:20.239995548 +0100
+@@ -763,7 +763,7 @@
+         installed_file.write(newline)
+         lineno = lineno + 1
+     installed_file.close()
+-    os.chmod(installed_location, 0755)
++    os.chmod(installed_location, 0o755)
+     return 0
+ 
+ def copy_and_fix_perl_path(task):
+@@ -791,7 +791,7 @@
+         installed_file.write(newline)
+         lineno = lineno + 1
+     installed_file.close()
+-    os.chmod(installed_location, 0755)
++    os.chmod(installed_location, 0o755)
+     return 0
+ 
+ 
+--- buildtools/wafsamba/wafsamba.py     2015-03-23 02:08:04.499999427 +0100
++++ buildtools/wafsamba/wafsamba.py     2015-03-23 01:45:45.429999938 +0100
+@@ -953,10 +953,6 @@ def samba_display(self):
+         return progress_display(self, ext_map[ext], fname)
+     return Task.Task.old_display(self)
+ 
+-Task.TaskBase.classes['Task'].old_display = Task.TaskBase.classes['Task'].display
+-Task.TaskBase.classes['Task'].display = samba_display
+-
+-
+ @after('apply_link')
+ @feature('cshlib')
+ def apply_bundle_remove_dynamiclib_patch(self):
+--- buildtools/wafadmin/Scripting.py	2014-10-01 11:16:21.000000000 +0200
++++ buildtools/wafadmin/Scripting.py	2015-03-23 00:16:00.289996585 +0100
+@@ -143,7 +143,7 @@
+ 	#"""
+ 	try:
+ 		prepare_impl(t, cwd, ver, wafdir)
+-	except Utils.WafError, e:
++	except Utils.WafError as e:
+ 		error(str(e))
+ 		sys.exit(1)
+ 	except KeyboardInterrupt:
+@@ -466,13 +466,13 @@
+ 				shutil.rmtree(proj[BLDDIR])
+ 			except IOError:
+ 				pass
+-			except OSError, e:
++			except OSError as e:
+ 				if e.errno != errno.ENOENT:
+ 					Logs.warn('project %r cannot be removed' % proj[BLDDIR])
+ 
+ 			try:
+ 				os.remove(f)
+-			except OSError, e:
++			except OSError as e:
+ 				if e.errno != errno.ENOENT:
+ 					Logs.warn('file %r cannot be removed' % f)
+ 
+--- buildtools/wafadmin/Utils.py	2015-03-23 00:21:56.679996449 +0100
++++ buildtools/wafadmin/Utils.py	2015-03-23 00:24:25.109996393 +0100
+@@ -446,7 +446,7 @@
+ 	try:
+ 		p = pproc.Popen(cmd, **kw)
+ 		output = p.communicate()[0]
+-	except OSError, e:
++	except OSError as e:
+ 		raise ValueError(str(e))
+ 
+ 	if p.returncode:
+--- buildtools/wafadmin/Utils.py	2015-03-23 00:25:44.759996362 +0100
++++ buildtools/wafadmin/Utils.py	2015-03-23 00:24:25.109996393 +0100
+@@ -423,7 +423,7 @@
+ 	except OSError:
+ 		try:
+ 			os.makedirs(dir)
+-		except OSError, e:
++		except OSError as e:
+ 			raise WafError("Cannot create folder '%s' (original error: %s)" % (dir, e))
+ 
+ def cmd_output(cmd, **kw):
+--- buildtools/wafadmin/Configure.py	2014-10-01 11:16:21.000000000 +0200
++++ buildtools/wafadmin/Configure.py	2015-03-23 00:31:28.239996231 +0100
+@@ -176,7 +176,7 @@
+ 			module = None
+ 			try:
+ 				module = Utils.load_tool(tool, tooldir)
+-			except Exception, e:
++			except Exception as e:
+ 				ex = e
+ 				if Options.options.download:
+ 					_3rdparty = os.path.normpath(Options.tooldir[0] + os.sep + '..' + os.sep + '3rdparty')
+--- buildtools/wafadmin/Configure.py	2015-03-23 00:33:14.059996191 +0100
++++ buildtools/wafadmin/Configure.py	2015-03-23 00:34:07.579996170 +0100
+@@ -190,7 +190,7 @@
+ 								web = urlopen(url)
+ 								if web.getcode() != 200:
+ 									continue
+-							except Exception, e:
++							except Exception as e:
+ 								# on python3 urlopen throws an exception
+ 								continue
+ 							else:
+--- buildtools/wafadmin/Configure.py	2015-03-23 00:35:38.989996136 +0100
++++ buildtools/wafadmin/Configure.py	2015-03-23 00:36:07.009996125 +0100
+@@ -419,7 +419,7 @@
+ 			if not f: self.fatal("No such method '%s'." % x)
+ 			try:
+ 				f()
+-			except Exception, e:
++			except Exception as e:
+ 				ret = self.err_handler(x, e)
+ 				if ret == BREAK:
+ 					break
+--- buildtools/wafadmin/Options.py	2014-10-01 11:16:21.000000000 +0200
++++ buildtools/wafadmin/Options.py	2015-03-23 00:41:00.629996013 +0100
+@@ -205,7 +205,7 @@
+ 			bidx = args.index('build')
+ 			if bidx > idx:
+ 				raise ValueError('build before check')
+-		except ValueError, e:
++		except ValueError as e:
+ 			args.insert(idx, 'build')
+ 
+ 	if args[0] != 'init':
+--- buildtools/wafadmin/Build.py	2014-10-01 11:16:21.000000000 +0200
++++ buildtools/wafadmin/Build.py	2015-03-23 00:47:47.369995858 +0100
+@@ -345,7 +345,7 @@
+ 	def load_envs(self):
+ 		try:
+ 			lst = Utils.listdir(self.cachedir)
+-		except OSError, e:
++		except OSError as e:
+ 			if e.errno == errno.ENOENT:
+ 				raise Utils.WafError('The project was not configured: run "waf configure" first!')
+ 			else:
+@@ -801,7 +801,7 @@
+ 
+ 			try:
+ 				os.remove(tgt)
+-			except OSError, e:
++			except OSError as e:
+ 				if e.errno != errno.ENOENT:
+ 					if not getattr(self, 'uninstall_error', None):
+ 						self.uninstall_error = True
+--- buildtools/wafadmin/Runner.py	2014-10-01 11:16:21.000000000 +0200
++++ buildtools/wafadmin/Runner.py	2015-03-23 00:51:40.919995769 +0100
+@@ -35,7 +35,7 @@
+ 		if tsk.__class__.stat: ret = tsk.__class__.stat(tsk)
+ 		# actual call to task's run() function
+ 		else: ret = tsk.call_run()
+-	except Exception, e:
++	except Exception as e:
+ 		tsk.err_msg = Utils.ex_stack()
+ 		tsk.hasrun = EXCEPTION
+ 
+@@ -193,7 +193,7 @@
+ 
+ 			try:
+ 				st = tsk.runnable_status()
+-			except Exception, e:
++			except Exception as e:
+ 				self.processed += 1
+ 				if self.stop and not Options.options.keep:
+ 					tsk.hasrun = SKIPPED
+--- buildtools/wafadmin/Tools/preproc.py	2014-10-01 11:16:21.000000000 +0200
++++ buildtools/wafadmin/Tools/preproc.py	2015-03-23 01:04:58.959995464 +0100
+@@ -712,7 +712,7 @@
+ 				continue
+ 			try:
+ 				self.process_line(kind, line)
+-			except Exception, e:
++			except Exception as e:
+ 				if Logs.verbose:
+ 					debug('preproc: line parsing failed (%s): %s %s', e, line, Utils.ex_stack())
+ 
+--- buildtools/wafadmin/Tools/config_c.py	2014-10-01 11:16:21.000000000 +0200
++++ buildtools/wafadmin/Tools/config_c.py	2015-03-23 01:08:10.659995391 +0100
+@@ -146,7 +146,7 @@
+ 	try:
+ 		p = Utils.pproc.Popen(cmd, stdout=Utils.pproc.PIPE, stderr=Utils.pproc.PIPE, shell=True)
+ 		(out, err) = p.communicate()
+-	except OSError, e:
++	except OSError as e:
+ 		self.log.write('error %r' % e)
+ 		self.fatal(str(e))
+ 
+@@ -243,7 +243,7 @@
+ 	ret = None
+ 	try:
+ 		ret = self.exec_cfg(kw)
+-	except Configure.ConfigurationError, e:
++	except Configure.ConfigurationError as e:
+ 		if 'errmsg' in kw:
+ 			self.check_message_2(kw['errmsg'], 'YELLOW')
+ 		if 'mandatory' in kw and kw['mandatory']:
+@@ -462,7 +462,7 @@
+ 	ret = None
+ 	try:
+ 		ret = self.run_c_code(*k, **kw)
+-	except Configure.ConfigurationError, e:
++	except Configure.ConfigurationError as e:
+ 		self.check_message_2(kw['errmsg'], 'YELLOW')
+ 		if 'mandatory' in kw and kw['mandatory']:
+ 			if Logs.verbose > 1:
+--- buildtools/wafsamba/samba_conftests.py	2015-02-24 19:59:51.000000000 +0100
++++ buildtools/wafsamba/samba_conftests.py	2015-03-23 01:17:52.369995169 +0100
+@@ -51,7 +51,7 @@
+     ret = None
+     try:
+         ret = self.run_c_code(*k, **kw)
+-    except Configure.ConfigurationError, e:
++    except Configure.ConfigurationError as e:
+         self.check_message_2(kw['errmsg'], 'YELLOW')
+         if 'mandatory' in kw and kw['mandatory']:
+             if Logs.verbose > 1:
+--- buildtools/wafadmin/Tools/compiler_cc.py	2015-03-23 01:49:10.989999860 +0100
++++ buildtools/wafadmin/Tools/compiler_cc.py	2014-10-01 11:16:21.000000000 +0200
+@@ -39,7 +39,7 @@
+ 		conf.env = orig.copy()
+ 		try:
+ 			conf.check_tool(compiler)
+-		except Configure.ConfigurationError, e:
++		except Configure.ConfigurationError as e:
+ 			debug('compiler_cc: %r' % e)
+ 		else:
+ 			if conf.env['CC']:
+--- buildtools/wafsamba/samba_dist.py   2015-03-23 01:49:39.399999849 +0100
++++ buildtools/wafsamba/samba_dist.py   2014-10-01 11:16:21.000000000 +0200
+@@ -171,7 +171,7 @@ def dist(appname='', version=''):
+         absdir = os.path.join(srcdir, dir)
+         try:
+             files = vcs_dir_contents(absdir)
+-        except Exception, e:
++        except Exception as e:
+             Logs.error('unable to get contents of %s: %s' % (absdir, e))
+             sys.exit(1)
+         add_files_to_tarball(tar, srcdir, dir, dist_base, destdir, blacklist, files)
+--- wscript	2014-12-20 16:07:55.000000000 +0100
++++ wscript	2015-03-23 00:55:29.559995681 +0100
+@@ -202,7 +202,7 @@
+                 need_pie = False
+         if conf.check_cc(cflags='-fPIE', ldflags='-pie', mandatory=need_pie,
+                          msg="Checking compiler for PIE support"):
+-		conf.env['ENABLE_PIE'] = True
++                         conf.env['ENABLE_PIE'] = True
+ 
+     if Options.options.enable_relro != False:
+         if Options.options.enable_relro == True:
+--- buildtools/wafsamba/samba_conftests.py	2015-03-23 01:20:28.489995110 +0100
++++ buildtools/wafsamba/samba_conftests.py	2015-03-23 01:24:50.659995010 +0100
+@@ -505,8 +505,8 @@
+                              define='XSLTPROC_MANPAGES', on_target=False,
+                              boolean=True)
+     if not conf.CONFIG_SET('XSLTPROC_MANPAGES'):
+-        print "A local copy of the docbook.xsl wasn't found on your system" \
+-              " consider installing package like docbook-xsl"
++        print("A local copy of the docbook.xsl wasn't found on your system" \
++              " consider installing package like docbook-xsl")
+ 
+ #
+ # Determine the standard libpath for the used compiler,
+--- configure   2015-03-23 02:07:27.379999442 +0100
++++ configure   2014-10-01 11:16:21.000000000 +0200
+@@ -10,5 +10,5 @@ JOBS=1
+ export JOBS
+ 
+ cd . || exit 1
+-${PYTHON:=python} $WAF configure "$@" || exit 1
++${PYTHON:=python2} $WAF configure "$@" || exit 1
+ cd $PREVPATH
+--- buildtools/wafadmin/Task.py	2014-10-01 11:16:21.000000000 +0200
++++ buildtools/wafadmin/Task.py	2015-03-23 01:14:35.929995244 +0100
+@@ -145,7 +145,7 @@
+ 	def set_group(self, idx):
+ 		if isinstance(idx, str):
+ 			g = self.groups_names[idx]
+-			for x in xrange(len(self.groups)):
++			for x in range(len(self.groups)):
+ 				if id(g) == id(self.groups[x]):
+ 					self.current_group = x
+ 		else:
+@@ -271,9 +271,9 @@
+ 		keys = self.cstr_groups.keys()
+ 		max = len(keys)
+ 		# hopefully the length of this list is short
+-		for i in xrange(max):
++		for i in range(max):
+ 			t1 = self.cstr_groups[keys[i]][0]
+-			for j in xrange(i + 1, max):
++			for j in range(i + 1, max):
+ 				t2 = self.cstr_groups[keys[j]][0]
+ 
+ 				# add the constraints based on the comparisons
+@@ -795,7 +795,7 @@
+ 		debug("Task %r", self)
+ 		msgs = ['Task must run', '* Source file or manual dependency', '* Implicit dependency', '* Environment variable']
+ 		tmp = 'task: -> %s: %s %s'
+-		for x in xrange(len(msgs)):
++		for x in range(len(msgs)):
+ 			if (new_sigs[x] != old_sigs[x]):
+ 				debug(tmp, msgs[x], v(old_sigs[x]), v(new_sigs[x]))
+ 
+@@ -999,7 +999,7 @@
+ 	buf = []
+ 	dvars = []
+ 	app = buf.append
+-	for x in xrange(len(extr)):
++	for x in range(len(extr)):
+ 		params[x] = params[x].strip()
+ 		if params[x]:
+ 			app("lst.extend(%r)" % params[x].split())

@@ -1,9 +1,0 @@
---- configure   2015-03-23 02:07:27.379999442 +0100
-+++ configure   2014-10-01 11:16:21.000000000 +0200
-@@ -10,5 +10,5 @@ JOBS=1
- export JOBS
- 
- cd . || exit 1
--${PYTHON:=python} $WAF configure "$@" || exit 1
-+${PYTHON:=python2} $WAF configure "$@" || exit 1
- cd $PREVPATH
