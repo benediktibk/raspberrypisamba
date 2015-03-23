@@ -29,8 +29,11 @@ src_prepare() {
 	epatch "${FILESDIR}"/exception_010.patch
 	epatch "${FILESDIR}"/exception_011.patch
 	epatch "${FILESDIR}"/exception_012.patch
+	epatch "${FILESDIR}"/exception_013.patch
+	epatch "${FILESDIR}"/exception_014.patch
+	epatch "${FILESDIR}"/dictionary_001.patch
 	epatch "${FILESDIR}"/indentation_001.patch
 	epatch "${FILESDIR}"/print_001.patch
+	epatch "${FILESDIR}"/python_001.patch
 	epatch "${FILESDIR}"/xrange_001.patch
-	epatch "${FILESDIR}"/summary.patch
 }

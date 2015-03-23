@@ -1,13 +1,13 @@
 --- buildtools/wafsamba/wafsamba.py     2015-03-23 02:08:04.499999427 +0100
 +++ buildtools/wafsamba/wafsamba.py     2015-03-23 01:45:45.429999938 +0100
-@@ -953,6 +953,10 @@ def samba_display(self):
+@@ -953,10 +953,6 @@ def samba_display(self):
          return progress_display(self, ext_map[ext], fname)
      return Task.Task.old_display(self)
  
-+Task.TaskBase.classes['Task'].old_display = Task.TaskBase.classes['Task'].display
-+Task.TaskBase.classes['Task'].display = samba_display
-+
-+
+-Task.TaskBase.classes['Task'].old_display = Task.TaskBase.classes['Task'].display
+-Task.TaskBase.classes['Task'].display = samba_display
+-
+-
  @after('apply_link')
  @feature('cshlib')
  def apply_bundle_remove_dynamiclib_patch(self):

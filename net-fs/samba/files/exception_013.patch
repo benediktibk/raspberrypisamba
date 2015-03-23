@@ -1,11 +1,11 @@
---- buildtools/wafadmin/Tools/compiler_cc.py    2015-03-23 01:49:10.989999860 +0100
-+++ buildtools/wafadmin/Tools/compiler_cc.py    2014-10-01 11:16:21.000000000 +0200
-@@ -39,7 +39,7 @@ def detect(conf):
-                conf.env = orig.copy()
-                try:
-                        conf.check_tool(compiler)
--               except Configure.ConfigurationError as e:
-+               except Configure.ConfigurationError, e:
-                        debug('compiler_cc: %r' % e)
-                else:
-                        if conf.env['CC']:
+--- buildtools/wafadmin/Tools/compiler_cc.py	2015-03-23 01:49:10.989999860 +0100
++++ buildtools/wafadmin/Tools/compiler_cc.py	2014-10-01 11:16:21.000000000 +0200
+@@ -39,7 +39,7 @@
+ 		conf.env = orig.copy()
+ 		try:
+ 			conf.check_tool(compiler)
+-		except Configure.ConfigurationError, e:
++		except Configure.ConfigurationError as e:
+ 			debug('compiler_cc: %r' % e)
+ 		else:
+ 			if conf.env['CC']:
