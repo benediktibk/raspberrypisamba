@@ -279,7 +279,7 @@
  
  cd . || exit 1
 -${PYTHON:=python} $WAF configure "$@" || exit 1
-+${PYTHON:=python2} $WAF configure "$@" || exit 1
++$PYTHON $WAF configure "$@" || exit 1
  cd $PREVPATH
 --- buildtools/wafadmin/Task.py	2014-10-01 11:16:21.000000000 +0200
 +++ buildtools/wafadmin/Task.py	2015-03-23 01:14:35.929995244 +0100
