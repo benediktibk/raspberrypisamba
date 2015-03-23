@@ -1,0 +1,13 @@
+--- buildtools/wafsamba/samba_conftests.py	2015-03-23 01:20:28.489995110 +0100
++++ buildtools/wafsamba/samba_conftests.py	2015-03-23 01:24:50.659995010 +0100
+@@ -505,8 +505,8 @@
+                              define='XSLTPROC_MANPAGES', on_target=False,
+                              boolean=True)
+     if not conf.CONFIG_SET('XSLTPROC_MANPAGES'):
+-        print "A local copy of the docbook.xsl wasn't found on your system" \
+-              " consider installing package like docbook-xsl"
++        print("A local copy of the docbook.xsl wasn't found on your system" \
++              " consider installing package like docbook-xsl")
+ 
+ #
+ # Determine the standard libpath for the used compiler,

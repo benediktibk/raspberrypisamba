@@ -1,0 +1,11 @@
+--- buildtools/wafadmin/Tools/preproc.py	2014-10-01 11:16:21.000000000 +0200
++++ buildtools/wafadmin/Tools/preproc.py	2015-03-23 01:04:58.959995464 +0100
+@@ -712,7 +712,7 @@
+ 				continue
+ 			try:
+ 				self.process_line(kind, line)
+-			except Exception, e:
++			except Exception as e:
+ 				if Logs.verbose:
+ 					debug('preproc: line parsing failed (%s): %s %s', e, line, Utils.ex_stack())
+ 

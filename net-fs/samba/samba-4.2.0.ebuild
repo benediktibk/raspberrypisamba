@@ -26,5 +26,10 @@ src_prepare() {
 	epatch "${FILESDIR}"/exception_007.patch
 	epatch "${FILESDIR}"/exception_008.patch
 	epatch "${FILESDIR}"/exception_009.patch
+	epatch "${FILESDIR}"/exception_010.patch
+	epatch "${FILESDIR}"/exception_011.patch
+	epatch "${FILESDIR}"/exception_012.patch
 	epatch "${FILESDIR}"/indentation_001.patch
+	epatch "${FILESDIR}"/print_001.patch
+	epatch "${FILESDIR}"/xrange_001.patch
 }
